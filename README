@@ -1,19 +1,20 @@
 This is a fixed kgmacros based on Mountain Lion 10.8.3 kernel debug kit.
 It's goal is to work with VMware kernel gdb stub. The default kgmacros file has
 problems working with VMware.
-Only tested with this stub, not over kdp. Probably works over kdp since fixes
+
+Only tested with this stub and not over kdp. Probably works since fixes
 are only missing casts. I doubt it will work with older versions, in particular
 Lion and Snow Leopard due to changes in internal structures. With other
 Mountain Lion versions your chances are better!
 
-If you want to debug 64 bits kernels (Mountain Lion in particular), you should
-use this fixed gdb version at https://github.com/gdbinit/gdb-ng.
+If you want to debug 64 bits OS X kernels, you should use this fixed gdb version
+available at https://github.com/gdbinit/gdb-ng.
 
-For info about using VMware's gdb stub refer to Snare post:
+For info about using VMware's gdb stub for kernel debugging refer to Snare's post:
 http://ho.ax/posts/2012/02/vmware-hardware-debugging/
 
-It's still a work in progress, quite a few commands still need to be fixed.
-THe most useful commands (to me at least) are already working.
+It's a work in progress, quite a few commands need to be fixed.
+THe most useful (to me at least) already work.
 
 Enjoy,
 Pedro

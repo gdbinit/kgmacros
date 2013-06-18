@@ -9575,8 +9575,8 @@ define _pt_step
             set $kgm_pte_loop = $kgm_pte_loop + 1
         end
     end
-    set $kgm_paddr_mask = ~((0xfffULL<<52) | 0xfffULL)
-    set $kgm_paddr_largemask = ~((0xfffULL<<52) | 0x1fffffULL)
+    set $kgm_paddr_mask = ~((0xfffULL<<0x34) | 0xfffULL)
+    set $kgm_paddr_largemask = ~((0xfffULL<<0x34) | 0x1fffffULL)
     if $kgm_pt_verbose < 2
         if $entry & (0x1 << 0)
             set $kgm_pt_valid = 1
@@ -9639,7 +9639,7 @@ define _pt_step
         if $entry & (0x3 << 9)
             printf " avail:0x%x", ($entry >> 9) & 0x3
         end
-        if $entry & (0x1ULL << 63)
+        if $entry & (0x1ULL << 0x3F)
             printf " noexec" 
         end
         printf "\n"
@@ -9654,7 +9654,7 @@ define _pml4_walk
     set $kgm_pframe_offset = 0
     if $kgm_pt_valid && cpu_64bit
         # Look up bits 47:39 of the linear address in PML4T
-        set $kgm_pt_index = ($kgm_vaddr >> 39) & 0x1ffULL
+        set $kgm_pt_index = ($kgm_vaddr >> 0x27) & 0x1ffULL
         set $kgm_pframe_offset = $kgm_vaddr & 0x7fffffffffULL
         if $kgm_pt_verbose >= 2
             printf "pml4 (index %d):\n", $kgm_pt_index
@@ -9663,7 +9663,7 @@ define _pml4_walk
     end
     if $kgm_pt_valid
         # Look up bits 38:30 of the linear address in PDPT
-        set $kgm_pt_index = ($kgm_vaddr >> 30) & 0x1ffULL
+        set $kgm_pt_index = ($kgm_vaddr >> 0x1E) & 0x1ffULL
         set $kgm_pframe_offset = $kgm_vaddr & 0x3fffffffULL
         if $kgm_pt_verbose >= 2
             printf "pdpt (index %d):\n", $kgm_pt_index
@@ -9672,7 +9672,7 @@ define _pml4_walk
     end
     if $kgm_pt_valid && !$kgm_pt_large
         # Look up bits 29:21 of the linear address in PDT
-        set $kgm_pt_index = ($kgm_vaddr >> 21) & 0x1ffULL
+        set $kgm_pt_index = ($kgm_vaddr >> 0x15) & 0x1ffULL
         set $kgm_pframe_offset = $kgm_vaddr & 0x1fffffULL
         if $kgm_pt_verbose >= 2
             printf "pdt (index %d):\n", $kgm_pt_index
@@ -9681,7 +9681,7 @@ define _pml4_walk
     end
     if $kgm_pt_valid && !$kgm_pt_large
         # Look up bits 20:21 of the linear address in PT
-        set $kgm_pt_index = ($kgm_vaddr >> 12) & 0x1ffULL
+        set $kgm_pt_index = ($kgm_vaddr >> 0xC) & 0x1ffULL
         set $kgm_pframe_offset = $kgm_vaddr & 0xfffULL
         if $kgm_pt_verbose >= 2
             printf "pt (index %d):\n", $kgm_pt_index

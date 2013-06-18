@@ -264,8 +264,9 @@ document kgm
 |     showztracehistogram   Prints a histogram of the ztraces table - ?
 |     showzallochistogram   Prints a histogram of the zallocs table	- ?
 |
-|     pmap_walk     Perform a page-table walk
-|     pmap_vtop     Translate a virtual address to physical address
+|     pmap_walk         Perform a page-table walk
+|     pmap_walk_page    Perform a page-table walk and dump the whole 4k page
+|     pmap_vtop         Translate a virtual address to physical address
 |
 |     showuserdyldinfo       Show dyld information and error messages - NOK
 |                            in the target task
@@ -9713,6 +9714,18 @@ define _pmap_walk_x86
     _pml4_walk $kgm_pmap->pm_cr3 $arg1
 end
 
+define _pmap_walk_x86_page
+    set $kgm_pmap = (pmap_t) $arg0
+    set $local_totalpages = 0x1000 / 4
+    set $local_currentaddr = $arg1
+    set $local_cr3 = $kgm_pmap->pm_cr3
+    while $local_totalpages > 0
+        _pml4_walk $local_cr3 $local_currentaddr
+        set $local_currentaddr = $local_currentaddr + 0x4
+        set $local_totalpages  = $local_totalpages - 1
+    end
+end
+
 define _pmap_walk_arm_level1_section
     set $kgm_tte_p = $arg0
     set $kgm_tte = *$kgm_tte_p
@@ -10044,6 +10057,34 @@ Syntax: (gdb) pmap_walk <pmap> <virtual_address>
 |     $kgm_pt_verbose=1 for final physical address
 |     $kgm_pt_verbose=2 for dump of page table entry.
 |     $kgm_pt_verbose=3 for full hex dump of page tables.
+end
+
+define pmap_walk_page
+    if $argc != 2
+        printf "pmap_walk_page <pmap> <vaddr>\n"
+    else
+        # set verbose always to 1 in this command
+        set $kgm_pt_verbose_original = $kgm_pt_verbose
+        set $kgm_pt_verbose = 1
+
+        if (($kgm_mtype & $kgm_mtype_x86_mask) == $kgm_mtype_x86_any)
+            _pmap_walk_x86_page $arg0 $arg1
+        else
+            printf "ARM not supported yet in this command!\n"
+            #if ($kgm_mtype == $kgm_mtype_arm)
+            #    _pmap_walk_arm $arg0 $arg1
+            #else
+            #    printf "Not available for current architecture.\n"
+            #end
+        end
+        set $kgm_pt_verbose = $kgm_pt_verbose_original
+    end
+end
+
+document pmap_walk_page
+Syntax: (gdb) pmap_walk_page <pmap> <virtual_address>
+| Perform a page-table walk in <pmap> for <virtual_address> and dump the whole 4k page.
+| $kgm_pt_verbose is always 1 in this command. 
 end
 
 define pmap_vtop

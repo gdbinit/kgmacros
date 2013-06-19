@@ -265,7 +265,7 @@ document kgm
 |     showzallochistogram   Prints a histogram of the zallocs table	- ?
 |
 |     pmap_walk         Perform a page-table walk
-|     pmap_walk_page    Perform a page-table walk and dump the whole 4k page
+|     pmap_walk_page    Perform a page-table walk and dump the whole 4k page or specified size
 |     pmap_vtop         Translate a virtual address to physical address
 |
 |     showuserdyldinfo       Show dyld information and error messages - NOK
@@ -9786,15 +9786,30 @@ define _pmap_walk_x86_size
         printf "No translation available.\n"
     end
     # if there's a last page that doesn't use the whole 4k 
-    # XXX: print remainder in appropriate format?
-    # this way it always print remainder in 32 bits length
     if ($pwxs_remainder > 0)
         set $pwxs_lastpage = $arg1 + $arg2 - $pwxs_remainder
         _get_pml4_page $pwxs_cr3 $pwxs_lastpage
         set $pwxs_curr_paddr = $kgm_paddr
         if $kgm_paddr_isvalid
-            readphysint $pwxs_curr_paddr 32 $kgm_lcpu_self
-            printf "phys 0x%016llx: 0x%08x\n", $pwxs_curr_paddr, $kgm_readphysint_result
+            if $pwxs_remainder == 1
+                readphysint $pwxs_curr_paddr 8 $kgm_lcpu_self
+                printf "phys 0x%016llx: 0x%02x\n", $pwxs_curr_paddr, $kgm_readphysint_result
+            else
+                if $pwxs_remainder == 2
+                    readphysint $pwxs_curr_paddr 16 $kgm_lcpu_self
+                    printf "phys 0x%016llx: 0x%04x\n", $pwxs_curr_paddr, $kgm_readphysint_result
+                else
+                    if $pwxs_remainder == 3
+                        readphysint $pwxs_curr_paddr 32 $kgm_lcpu_self
+                        set $kgm_readphysint_result = $kgm_readphysint_result & 0xFFFFFF
+                        printf "phys 0x%016llx: 0x%06x\n", $pwxs_curr_paddr, $kgm_readphysint_result
+                    else
+                        readphysint $pwxs_curr_paddr 32 $kgm_lcpu_self
+                        printf "phys 0x%016llx: 0x%08x\n", $pwxs_curr_paddr, $kgm_readphysint_result
+                    end
+
+                end
+            end
         else
             printf "No translation available.\n"
         end 

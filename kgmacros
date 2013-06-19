@@ -9716,13 +9716,13 @@ end
 
 define _pmap_walk_x86_page
     set $kgm_pmap = (pmap_t) $arg0
-    set $local_totalpages = 0x1000 / 4
+    set $local_iterations = 0x1000 / 4
     set $local_currentaddr = $arg1
     set $local_cr3 = $kgm_pmap->pm_cr3
-    while $local_totalpages > 0
+    while $local_iterations > 0
         _pml4_walk $local_cr3 $local_currentaddr
         set $local_currentaddr = $local_currentaddr + 0x4
-        set $local_totalpages  = $local_totalpages - 1
+        set $local_iterations  = $local_iterations - 1
     end
 end
 

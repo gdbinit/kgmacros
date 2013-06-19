@@ -9726,6 +9726,25 @@ define _pmap_walk_x86_page
     end
 end
 
+define _pmap_walk_x86_size
+    set $kgm_pmap = (pmap_t) $arg0
+    set $pwxs_iterations = $arg2 / 4
+    set $pwxs_remainder = $arg2 % 4
+    # print remainder in appropriate format?
+    # this way it always print remainder in 32 bits length
+    if ($pwxs_remainder > 0)
+        set $pwxs_iterations = $pwxs_iterations + 1
+    end
+    set $pwxs_currentaddr = $arg1
+    set $pwxs_cr3 = $kgm_pmap->pm_cr3
+    while $pwxs_iterations > 0
+        _pml4_walk $local_cr3 $pwxs_currentaddr
+        set $pwxs_currentaddr = $pwxs_currentaddr + 0x4
+        set $pwxs_iterations  = $pwxs_iterations - 1
+    end
+
+end
+
 define _pmap_walk_arm_level1_section
     set $kgm_tte_p = $arg0
     set $kgm_tte = *$kgm_tte_p
@@ -10060,7 +10079,7 @@ Syntax: (gdb) pmap_walk <pmap> <virtual_address>
 end
 
 define pmap_walk_page
-    if $argc != 2
+    if $argc < 2
         printf "pmap_walk_page <pmap> <vaddr>\n"
     else
         # set verbose always to 1 in this command
@@ -10068,7 +10087,21 @@ define pmap_walk_page
         set $kgm_pt_verbose = 1
 
         if (($kgm_mtype & $kgm_mtype_x86_mask) == $kgm_mtype_x86_any)
-            _pmap_walk_x86_page $arg0 $arg1
+            if ($argc == 3)
+                set $pwp_nrpages = $arg2 / 0x1000
+                set $pwp_remainder = $arg2 % 0x1000
+                set $pwp_vaddr = $arg1
+                while ($pwp_nrpages > 0)
+                    _pmap_walk_x86_size $arg0 $pwp_vaddr 0x1000
+                    set $pwp_vaddr = $pwp_vaddr + 0x1000
+                    set $pwp_nrpages = $pwp_nrpages - 1
+                end
+                if ($pwp_remainder > 0)
+                    _pmap_walk_x86_size $arg0 $pwp_vaddr $pwp_remainder
+                end
+            else
+                _pmap_walk_x86_page $arg0 $arg1
+            end
         else
             printf "ARM not supported yet in this command!\n"
             #if ($kgm_mtype == $kgm_mtype_arm)

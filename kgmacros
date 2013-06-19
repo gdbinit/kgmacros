@@ -9709,26 +9709,95 @@ define _pml4_walk
     end
 end
 
+# this is a modified version of _pml4_walk to just return the page physical address
+define _get_pml4_page
+    set $kgm_pt_paddr = $arg0
+    set $kgm_vaddr = $arg1
+    set $kgm_pt_valid = $kgm_pt_paddr != 0
+    set $kgm_pt_large = 0
+    set $kgm_pframe_offset = 0
+
+    set $gpp_old_verbose = $kgm_pt_verbose
+    set $kgm_pt_verbose = 0
+
+    if $kgm_pt_valid && cpu_64bit
+        # Look up bits 47:39 of the linear address in PML4T
+        set $kgm_pt_index = ($kgm_vaddr >> 0x27) & 0x1ffULL
+        set $kgm_pframe_offset = $kgm_vaddr & 0x7fffffffffULL
+        _pt_step
+    end
+    if $kgm_pt_valid
+        # Look up bits 38:30 of the linear address in PDPT
+        set $kgm_pt_index = ($kgm_vaddr >> 0x1E) & 0x1ffULL
+        set $kgm_pframe_offset = $kgm_vaddr & 0x3fffffffULL
+        _pt_step
+    end
+    if $kgm_pt_valid && !$kgm_pt_large
+        # Look up bits 29:21 of the linear address in PDT
+        set $kgm_pt_index = ($kgm_vaddr >> 0x15) & 0x1ffULL
+        set $kgm_pframe_offset = $kgm_vaddr & 0x1fffffULL
+        _pt_step
+    end
+    if $kgm_pt_valid && !$kgm_pt_large
+        # Look up bits 20:21 of the linear address in PT
+        set $kgm_pt_index = ($kgm_vaddr >> 0xC) & 0x1ffULL
+        set $kgm_pframe_offset = $kgm_vaddr & 0xfffULL
+        _pt_step
+    end
+
+    if $kgm_pt_valid
+        set $kgm_paddr = $kgm_pt_paddr + $kgm_pframe_offset
+        set $kgm_paddr_isvalid = 1
+    else
+        set $kgm_paddr = 0
+        set $kgm_paddr_isvalid = 0
+    end
+
+    set $kgm_pt_verbose = $gpp_old_verbose
+end
+
 define _pmap_walk_x86
     set $kgm_pmap = (pmap_t) $arg0
     _pml4_walk $kgm_pmap->pm_cr3 $arg1
 end
 
+# arg0 is the pmap
+# arg1 the virtual address
+# arg2 the size, optional
 define _pmap_walk_x86_size
     set $kgm_pmap = (pmap_t) $arg0
     set $pwxs_iterations = $arg2 / 4
     set $pwxs_remainder = $arg2 % 4
-    # print remainder in appropriate format?
+    
+    set $pwxs_cr3 = $kgm_pmap->pm_cr3
+    # grab the physical address of each page to avoid lookups for each dword we want to print
+    _get_pml4_page $pwxs_cr3 $arg1
+    # _get_pml4_page returns the physical address in $kgm_paddr var
+    set $pwxs_curr_paddr = $kgm_paddr
+    # if we have a valid physical address of the page we can finally dump its contents
+    if $kgm_paddr_isvalid
+        while $pwxs_iterations > 0
+            readphysint $pwxs_curr_paddr 32 $kgm_lcpu_self
+            printf "phys 0x%016llx: 0x%08x\n", $pwxs_curr_paddr, $kgm_readphysint_result
+            set $pwxs_curr_paddr = $pwxs_curr_paddr + 0x4
+            set $pwxs_iterations  = $pwxs_iterations - 1
+        end
+    else
+        printf "No translation available.\n"
+    end
+    # if there's a last page that doesn't use the whole 4k 
+    # XXX: print remainder in appropriate format?
     # this way it always print remainder in 32 bits length
     if ($pwxs_remainder > 0)
-        set $pwxs_iterations = $pwxs_iterations + 1
-    end
-    set $pwxs_currentaddr = $arg1
-    set $pwxs_cr3 = $kgm_pmap->pm_cr3
-    while $pwxs_iterations > 0
-        _pml4_walk $pwxs_cr3 $pwxs_currentaddr
-        set $pwxs_currentaddr = $pwxs_currentaddr + 0x4
-        set $pwxs_iterations  = $pwxs_iterations - 1
+        set $pwxs_lastpage = $arg1 + $arg2 - $pwxs_remainder
+        _get_pml4_page $pwxs_cr3 $pwxs_lastpage
+        set $pwxs_curr_paddr = $kgm_paddr
+        if $kgm_paddr_isvalid
+            readphysint $pwxs_curr_paddr 32 $kgm_lcpu_self
+            printf "phys 0x%016llx: 0x%08x\n", $pwxs_curr_paddr, $kgm_readphysint_result
+        else
+            printf "No translation available.\n"
+        end 
     end
 end
 

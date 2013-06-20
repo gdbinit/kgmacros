@@ -1813,8 +1813,9 @@ end
 define showtaskvm
 	set $kgm_taskp = (task_t)$arg0
 	showtaskheader
-	showmapheader
+	#showmapheader
 	showtaskint $kgm_taskp
+    showmapheader
 	showvmint $kgm_taskp->map 0
 end
 document showtaskvm

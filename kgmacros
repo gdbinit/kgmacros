@@ -76,6 +76,8 @@ document kgm
 |
 |     showmap	     Display info about the specified vm_map - ok
 |     showmapvme     Display a summary list of the specified vm_map's entries - ok
+|     showvmap       Display vm_map structure
+|     showpmap       Display pmap structure
 |
 |     showipc        Display info about the specified ipc space - ok
 |     showrights     Display a summary list of all the rights in an ipc space - ok
@@ -1370,7 +1372,7 @@ define showvmint
         while (($kgm_vmep != 0) && ($kgm_vmep != $kgm_head_vmep))
             set $kgm_vme = *$kgm_vmep
             printf "    "
-	    showptr $kgm_vmep
+	        showptr $kgm_vmep
             printf "  0x%016llx  ", $kgm_vme.links.start
             printf "%1x", $kgm_vme.protection
             printf "%1x", $kgm_vme.max_protection
@@ -1396,7 +1398,7 @@ define showvmint
                 end
             end
             # fG! - fix cast
-            printf "%6d  ", (((struct vm_map_links*)$kgm_vmep->links)->end - ((struct vm_map_links*)$kgm_vmep->links)->start) >> 12
+            printf "%6d  ", (((struct vm_map_links*)$kgm_vmep->links)->end - ((struct vm_map_links*)$kgm_vmep->links)->start) >> 0xC
             showptr $kgm_vme.object.vm_object
             printf "  0x%016llx\n", $kgm_vme.offset
             set $kgm_vmep = $kgm_vme.links.next
@@ -1510,6 +1512,30 @@ end
 document showmap
 Syntax: (gdb) showmap <vm_map>
 | Routine to print out info about the specified vm_map
+end
+
+define showvmap
+    if $argc == 1
+        print *(vm_map_t)$arg0
+    else
+        printf "showvmap <vm_map>\n"
+    end
+end
+document showvmap
+Syntax: (gdb) showvmap <vm_map>
+| Routine to print vm_map structure
+end
+
+define showpmap
+    if $argc == 1
+        print *(pmap_t)$arg0
+    else
+        printf "showpmap <pmap>\n"
+    end
+end
+document showpmap
+Syntax: (gdb) showpmap <pmap>
+| Routine to print pmap structure
 end
 
 define showallvm

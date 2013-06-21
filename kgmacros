@@ -1467,7 +1467,7 @@ define showmapwiredp
 	    showptr $kgm_vmep
 	    printf "  0x%016llx  ", $kgm_vme.links.start
 	    printf "%5d", $kgm_vme.alias
-            printf "%6d  ",($kgm_vme.links.end - $kgm_vme.links.start) >> 12
+            printf "%6d  ",($kgm_vme.links.end - $kgm_vme.links.start) >> 0xC
 	    showptr $kgm_objp
 	    printf "[%3d]", $kgm_objp->ref_count
 	    printf "%7d\n", $kgm_objp->wired_page_count
@@ -1693,7 +1693,7 @@ define showipcint
         while ( $kgm_iindex < $kgm_is.is_table_size )
             set $kgm_ie = *$kgm_iep
             if $kgm_ie.ie_bits & 0x001f0000
-                set $kgm_name = (($kgm_iindex << 8)|($kgm_ie.ie_bits >> 24))
+                set $kgm_name = (($kgm_iindex << 8)|($kgm_ie.ie_bits >> 0x18))
                 showipceint $kgm_iep $kgm_name
                 if $arg2 != 0
 		   if $kgm_ie.ie_object != 0 && ($kgm_ie.ie_bits & 0x00070000) && ((ipc_port_t) $kgm_ie.ie_object)->ip_callstack[0] != 0
@@ -2176,12 +2176,12 @@ define showkmsgint
     showptr $arg0
     showptrhdrpad
     printf "  0x%08x  ", $kgm_kmsgh.msgh_id
-    if (($kgm_kmsgh.msgh_bits & 0xff) == 19)
+    if (($kgm_kmsgh.msgh_bits & 0xff) == 0x13)
 	printf "rC"
     else
 	printf "rM"
     end
-    if (($kgm_kmsgh.msgh_bits & 0xff00) == (19 << 8))
+    if (($kgm_kmsgh.msgh_bits & 0xff00) == (0x13 << 8))
 	printf "lC"
     else
 	printf "lM"
@@ -4227,7 +4227,7 @@ define showobjectint
         printf ", vt "
         output /a (unsigned long) $kgm_vt
         if ($kgm_show_object_retain)
-            printf ", retain count %d, container retain %d", (0xffff & $kgm_obj->retainCount), $kgm_obj->retainCount >> 16
+            printf ", retain count %d, container retain %d", (0xffff & $kgm_obj->retainCount), $kgm_obj->retainCount >> 0x10
         end
         printf "` "
     end
@@ -5774,8 +5774,8 @@ end
 
 define mbuf_buf2slab
 	set $addr = $arg0
-	set $gix = ((char *)$addr - (char *)mbutl) >> 20
-	set $ix = ((char *)$addr - (char *)slabstbl[$gix].slg_slab[0].sl_base) >> 12
+	set $gix = ((char *)$addr - (char *)mbutl) >> 0x14
+	set $ix = ((char *)$addr - (char *)slabstbl[$gix].slg_slab[0].sl_base) >> 0xC
 	set $slab = &slabstbl[$gix].slg_slab[$ix]
 	if $kgm_lp64
 		printf "0x%-16llx", $slab
@@ -5790,7 +5790,7 @@ end
 
 define mbuf_buf2mca
 	set $addr = $arg0
-	set $ix = ((char *)$addr - (char *)mbutl) >> 12
+	set $ix = ((char *)$addr - (char *)mbutl) >> 0xC
 	set $clbase = ((union mbigcluster *)mbutl) + $ix
 	set $mclidx = (((char *)$addr - (char *)$clbase) >> 8)
 	set $mca = mclaudit[$ix].cl_audit[$mclidx]
@@ -5816,7 +5816,7 @@ define mbuf_showmca
 	mbuf_mca_ctype $mca 1
 	printf "\ncontrolling mcache:\t%p (%s)\n", $mca->mca_cache, $cp->mc_name
 	if $mca->mca_uflags & $MB_SCVALID
-		set $ix = ((char *)$mca->mca_addr - (char *)mbutl) >> 12
+		set $ix = ((char *)$mca->mca_addr - (char *)mbutl) >> 0xC
 		set $clbase = ((union mbigcluster *)mbutl) + $ix
 		set $mclidx = (((char *)$mca->mca_addr - (char *)$clbase) >> 8)
 		printf "mbuf obj:\t\t%p\n", $mca->mca_addr
@@ -6103,7 +6103,7 @@ define mbuf_slabs
 		set $obj = $sl->sl_base
 
 		if mclaudit != 0
-			set $ix = ((char *)$obj - (char *)mbutl) >> 12
+			set $ix = ((char *)$obj - (char *)mbutl) >> 0xC
 			set $clbase = ((union mbigcluster *)mbutl) + $ix
 			set $mclidx = (((char *)$obj - (char *)$clbase) >> 8)
 			set $mca = mclaudit[$ix].cl_audit[$mclidx]
@@ -6144,7 +6144,7 @@ define mbuf_slabs
 				set $mca = 0
 
 				if mclaudit != 0
-					set $ix = ((char *)$obj - (char *)mbutl) >> 12
+					set $ix = ((char *)$obj - (char *)mbutl) >> 0xC
 					set $clbase = ((union mbigcluster *)mbutl) + $ix
 					set $mclidx = (((char *)$obj - (char *)$clbase) >> 8)
 					set $mca = mclaudit[$ix].cl_audit[$mclidx]
@@ -6437,7 +6437,7 @@ define mbuf_walkallslabs
 		while $y < $NSLABSPMB && $stop == 0
 			set $sl = &$slg->slg_slab[$y]
 			set $base = (char *)$sl->sl_base
-			set $ix = ($base - (char *)mbutl) >> 12
+			set $ix = ($base - (char *)mbutl) >> 0xC
 			set $clbase = ((union mbigcluster *)mbutl) + $ix
 			set $mclidx = ($base - (char *)$clbase) >> 8
 			set $mca = mclaudit[$ix].cl_audit[$mclidx]
@@ -9885,7 +9885,7 @@ define _pmap_walk_arm_level1_section
         printf " imp(%d)", (($kgm_tte & 0x00000200) >> 9) 
 
         # AP bit 15 and [11:10], merged to a single 3-bit value
-        set $kgm_access = (($kgm_tte & 0x00000c00) >> 10) | (($kgm_tte & 0x00008000) >> 13)
+        set $kgm_access = (($kgm_tte & 0x00000c00) >> 0xA) | (($kgm_tte & 0x00008000) >> 0xD)
         if ($kgm_access == 0x0)
             printf " noaccess"
         end
@@ -9912,7 +9912,7 @@ define _pmap_walk_arm_level1_section
         end
 
         # TEX bit [14:12]
-        set $kgm_tex_bits = (($kgm_tte & 0x00007000) >> 12)
+        set $kgm_tex_bits = (($kgm_tte & 0x00007000) >> 0xC)
 
         # Print TEX, C, B all together
         printf " TEX:C:B(%d%d%d:%d:%d)", ($kgm_tex_bits & 0x4 ? 1 : 0), ($kgm_tex_bits & 0x2 ? 1 : 0), ($kgm_tex_bits & 0x1 ? 1 : 0), $kgm_c_bit, $kgm_b_bit
@@ -9955,7 +9955,7 @@ define _pmap_walk_arm_level2
     set $kgm_vaddr = $arg1
 
     set $kgm_pte_pbase = (($kgm_tte & 0xFFFFFC00) - gPhysBase + gVirtBase)
-    set $kgm_pte_index = ($kgm_vaddr >> 12) & 0x000000FF
+    set $kgm_pte_index = ($kgm_vaddr >> 0xC) & 0x000000FF
     set $kgm_pte_p = &((pt_entry_t *)$kgm_pte_pbase)[$kgm_pte_index]
     set $kgm_pte = *$kgm_pte_p
 
@@ -10068,7 +10068,7 @@ define _pmap_walk_arm_level2
 
             # TEX bit [14:12] for large, [8:6] for small
             if (($kgm_pte & 0x00000003) == 0x00000001)
-                set $kgm_tex_bits = (($kgm_pte & 0x00007000) >> 12)
+                set $kgm_tex_bits = (($kgm_pte & 0x00007000) >> 0xC)
             else
                 set $kgm_tex_bits = (($kgm_pte & 0x000001c0) >> 6)
             end
@@ -10103,7 +10103,7 @@ define _pmap_walk_arm
     set $kgm_paddr_isvalid = 0
 
     # Shift by TTESHIFT (20) to get tte index
-    set $kgm_tte_index = (($kgm_vaddr - $kgm_pmap->min) >> 20)
+    set $kgm_tte_index = (($kgm_vaddr - $kgm_pmap->min) >> 0x14)
     set $kgm_tte_p = &$kgm_pmap->tte[$kgm_tte_index]
     set $kgm_tte = *$kgm_tte_p
     if $kgm_pt_verbose >= 2
@@ -11058,16 +11058,16 @@ define showkerneldebugbufferentry
 	
 	if $kgm_lp64
 		set $kgm_kdebug_cpu	 = $kgm_kdebug_entry->cpuid
-		set $kgm_ts_hi	     = ($kgm_kdebug_entry->timestamp >> 32) & 0xFFFFFFFF
+		set $kgm_ts_hi	     = ($kgm_kdebug_entry->timestamp >> 0x20) & 0xFFFFFFFF
 		set $kgm_ts_lo	     = $kgm_kdebug_entry->timestamp & 0xFFFFFFFF
 	else
-		set $kgm_kdebug_cpu	 = ($kgm_kdebug_entry->timestamp >> 56)
-		set $kgm_ts_hi	     = ($kgm_kdebug_entry->timestamp >> 32) & 0x00FFFFFF
+		set $kgm_kdebug_cpu	 = ($kgm_kdebug_entry->timestamp >> 0x38)
+		set $kgm_ts_hi	     = ($kgm_kdebug_entry->timestamp >> 0x20) & 0x00FFFFFF
 		set $kgm_ts_lo	     = $kgm_kdebug_entry->timestamp & 0xFFFFFFFF
 	end
 	
-	set $kgm_kdebug_class    = ($kgm_debugid >> 24) & 0x000FF
-	set $kgm_kdebug_subclass = ($kgm_debugid >> 16) & 0x000FF
+	set $kgm_kdebug_class    = ($kgm_debugid >> 0x18) & 0x000FF
+	set $kgm_kdebug_subclass = ($kgm_debugid >> 0x10) & 0x000FF
 	set $kgm_kdebug_code     = ($kgm_debugid >>  2) & 0x03FFF
 	set $kgm_kdebug_qual     = ($kgm_debugid      ) & 0x00003
 	
@@ -11360,7 +11360,7 @@ define showallvmstats
   while $kgm_taskp != $kgm_head_taskp
     set $kgm_procp = (struct proc *)($kgm_taskp->bsd_info)
     set $kgm_mapp = (struct _vm_map *)($kgm_taskp->map)
-    printf "%8d %17s %8d %15d %15d %15d %15d\n", $kgm_procp->p_pid, $kgm_procp->p_comm, $kgm_mapp->hdr.nentries, $kgm_mapp->pmap->stats.wired_count, $kgm_mapp->size >> 12, $kgm_mapp->pmap->stats.resident_count, $kgm_mapp->pmap->stats.resident_max
+    printf "%8d %17s %8d %15d %15d %15d %15d\n", $kgm_procp->p_pid, $kgm_procp->p_comm, $kgm_mapp->hdr.nentries, $kgm_mapp->pmap->stats.wired_count, $kgm_mapp->size >> 0xC, $kgm_mapp->pmap->stats.resident_count, $kgm_mapp->pmap->stats.resident_max
     set $kgm_taskp = (struct task *)($kgm_taskp->tasks.next)
   end
 end
@@ -11628,7 +11628,7 @@ define _pci_cfg_addr
        set $off = $arg3
 
        _pci_cfg_init
-       set $kgm_pci_cfg_addr = $kgm_pci_cfg_base | ($bus << 20) | ($dev << 15) | ($fcn << 12) | $off
+       set $kgm_pci_cfg_addr = $kgm_pci_cfg_base | ($bus << 0x14) | ($dev << 0xF) | ($fcn << 0xC) | $off
 end
 
 define _pci_cfg_value
@@ -11720,7 +11720,7 @@ define pci_cfg_dump
 		  if ($off & 0xF) == 0
 		     printf "\n%08X: ", $kgm_pci_cfg_addr
 		  end
-		  printf "%02X %02X %02X %02X ", $kgm_pci_cfg_value & 0xFF, ($kgm_pci_cfg_value >> 8) & 0xFF, ($kgm_pci_cfg_value >> 16) & 0xFF, ($kgm_pci_cfg_value >> 24) & 0xFF
+		  printf "%02X %02X %02X %02X ", $kgm_pci_cfg_value & 0xFF, ($kgm_pci_cfg_value >> 8) & 0xFF, ($kgm_pci_cfg_value >> 0x10) & 0xFF, ($kgm_pci_cfg_value >> 0x18) & 0xFF
 	     	  set $off = $off + 4
 	      end
 	      printf "\n"
@@ -11733,7 +11733,7 @@ define pci_cfg_dump
 		       if ($off & 0xF) == 0
 		       	  printf "\n%08X: ", $kgm_pci_cfg_addr
 		       end
-		       printf "%02X %02X %02X %02X ", $kgm_pci_cfg_value & 0xFF, ($kgm_pci_cfg_value >> 8) & 0xFF, ($kgm_pci_cfg_value >> 16) & 0xFF, ($kgm_pci_cfg_value >> 24) & 0xFF
+		       printf "%02X %02X %02X %02X ", $kgm_pci_cfg_value & 0xFF, ($kgm_pci_cfg_value >> 8) & 0xFF, ($kgm_pci_cfg_value >> 0x10) & 0xFF, ($kgm_pci_cfg_value >> 0x18) & 0xFF
 	     	       set $off = $off + 4
 	         end
 	         printf "\n"
@@ -11770,9 +11770,9 @@ define _pci_cfg_scan
 		   	 _pci_cfg_value $bus $dev $fcn 0x0 32
 			 if $kgm_pci_cfg_value > 0 && $kgm_pci_cfg_value < 0xFFFFFFFF
 			    if $dump == 0
-			       printf "%03X:%03X:%03X: %02X%02X   %02X%02X", $bus, $dev, $fcn, ($kgm_pci_cfg_value >> 8) & 0xFF, $kgm_pci_cfg_value & 0xFF, ($kgm_pci_cfg_value >> 24) & 0xFF, ($kgm_pci_cfg_value >> 16) & 0xFF 
+			       printf "%03X:%03X:%03X: %02X%02X   %02X%02X", $bus, $dev, $fcn, ($kgm_pci_cfg_value >> 8) & 0xFF, $kgm_pci_cfg_value & 0xFF, ($kgm_pci_cfg_value >> 0x18) & 0xFF, ($kgm_pci_cfg_value >> 0x10) & 0xFF 
 			       _pci_cfg_value $bus $dev $fcn 0x8 32
-			       printf "    %02X | %02X%02X%02X\n", $kgm_pci_cfg_value & 0xFF, ($kgm_pci_cfg_value >> 24) & 0xFF, ($kgm_pci_cfg_value >> 16) & 0xFF, ($kgm_pci_cfg_value >> 8) & 0xFF
+			       printf "    %02X | %02X%02X%02X\n", $kgm_pci_cfg_value & 0xFF, ($kgm_pci_cfg_value >> 0x18) & 0xFF, ($kgm_pci_cfg_value >> 0x10) & 0xFF, ($kgm_pci_cfg_value >> 8) & 0xFF
 			    else
 			       printf "  device: %03X:%03X:%03X\n", $bus, $dev, $fcn			       
 			       pci_cfg_dump $bus $dev $fcn	
@@ -12159,10 +12159,10 @@ define ioapic_dump
 
        # version
        _ioapic_addr_value $_ioapic_index_ver
-       set $maxredir = (($kgm_ioapic_value & 0xFF0000) >> 16) + 1
+       set $maxredir = (($kgm_ioapic_value & 0xFF0000) >> 0x10) + 1
 
        printf "IOAPIC[0x%02X] VERSION:   0x%08X         [", $_ioapic_index_ver, $kgm_ioapic_value
-       printf "MAXREDIR=%02d PRQ=%d VERSION=0x%02X]\n", $maxredir, ($kgm_ioapic_value >> 15) & 0x1, $kgm_ioapic_value & 0xFF
+       printf "MAXREDIR=%02d PRQ=%d VERSION=0x%02X]\n", $maxredir, ($kgm_ioapic_value >> 0xF) & 0x1, $kgm_ioapic_value & 0xFF
        
        # all the redir entries
        set $i = 0
@@ -12326,7 +12326,7 @@ define lapic_dump
        printf "LAPIC[0x%03X] ID:                 0x%08X\n", $_lapic_id, $kgm_lapic_value
 
        _lapic_addr_value $_lapic_version $lcpu
-       set $lvt_num = ($kgm_lapic_value >> 16) + 1
+       set $lvt_num = ($kgm_lapic_value >> 0x10) + 1
        printf "LAPIC[0x%03X] VERSION:            0x%08X [VERSION=%d MaxLVT=%d]\n", $_lapic_version, $kgm_lapic_value, $kgm_lapic_value & 0xFF, $lvt_num
        
        _lapic_addr_value $_lapic_tpr $lcpu
@@ -12388,7 +12388,7 @@ define lapic_dump
        printf "\n"
 
        _lapic_addr_value $_lapic_icr1 $lcpu
-       printf "LAPIC[0x%03X] Interrupt Command:  0x%08X [DEST=%d]\n", $_lapic_icr0, $kgm_lapic_value, $kgm_lapic_value >> 24
+       printf "LAPIC[0x%03X] Interrupt Command:  0x%08X [DEST=%d]\n", $_lapic_icr0, $kgm_lapic_value, $kgm_lapic_value >> 0x18
        _lapic_addr_value $_lapic_icr0 $lcpu
        printf "                                 0x%08X ", $kgm_lapic_value
        _apic_print $kgm_lapic_value
@@ -12694,7 +12694,7 @@ showptrhdrpad
 showptrhdrpad
 	printf "name\n"
 
-	set $kgm_swh_devnode_dev = (((int) $arg0) << 24) | (int) $arg1
+	set $kgm_swh_devnode_dev = (((int) $arg0) << 0x18) | (int) $arg1
 	# iterate all tasks to iterate all processes to iterate all
 	# open files in each process to see who has a given major/minor
 	# device open
@@ -12790,7 +12790,7 @@ define showvnodedev
 	if (($kgm_vtype == VBLK) || ($kgm_vtype == VCHR))
 		set $kgm_devnode = (devnode_t *) $kgm_vnode->v_data
 		set $kgm_devnode_dev = $kgm_devnode->dn_typeinfo.dev
-		set $kgm_devnode_major = ($kgm_devnode_dev >> 24) & 0xff
+		set $kgm_devnode_major = ($kgm_devnode_dev >> 0x18) & 0xff
 		set $kgm_devnode_minor = $kgm_devnode_dev & 0x00ffffff
 
 		# boilerplate device information for a vnode 

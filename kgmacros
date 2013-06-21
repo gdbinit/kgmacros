@@ -1341,7 +1341,7 @@ end
 define showvmeheader
     printf "    entry     "
     showptrhdrpad
-    printf "  start               prot  #page  object    "
+    printf "  start               end                 prot  #page  object    "
     showptrhdrpad
     printf "  offset\n"
 end
@@ -1373,7 +1373,8 @@ define showvmint
             set $kgm_vme = *$kgm_vmep
             printf "    "
 	        showptr $kgm_vmep
-            printf "  0x%016llx  ", $kgm_vme.links.start
+            printf "  0x%016llx", ((struct vm_map_links*)$kgm_vmep->links)->start
+            printf "  0x%016llx  ", ((struct vm_map_links*)$kgm_vmep->links)->end
             printf "%1x", $kgm_vme.protection
             printf "%1x", $kgm_vme.max_protection
             if $kgm_vme.inheritance == 0x0

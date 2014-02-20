@@ -1977,13 +1977,12 @@ end
 define showprocheader
     printf "  pid  process     "
     showptrhdrpad
-    printf "io_policy    wq_state   command\n"
+    printf "       command\n"
 end
 
 define showprocint
     set $kgm_procp = (struct proc *)$arg0
     if $kgm_procp != 0
-    	set $kgm_printed = 0
         printf "%5d  ", $kgm_procp->p_pid
 		showptr $kgm_procp
 		if ($kgm_procp->p_lflag & 0x400000)
@@ -1991,11 +1990,6 @@ define showprocint
 		else
 	   		printf "       "
 		end
-		set $ptask = (struct task *)$kgm_procp->task
-		if ($kgm_printed == 0)
-	   		printf "      "
-		end
-   		printf "           "
 		printf "  %s\n", $kgm_procp->p_comm
     else
 		printf "  *0*  "

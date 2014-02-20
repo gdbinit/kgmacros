@@ -893,15 +893,15 @@ define showallthreads
     set $kgm_taskp = (struct task *)($kgm_head_taskp->next)
     while $kgm_taskp != $kgm_head_taskp
         showtaskheader
-	showtaskint $kgm_taskp
-	showactheader
-	set $kgm_head_actp = &($kgm_taskp->threads)
+		showtaskint $kgm_taskp
+		showactheader
+		set $kgm_head_actp = &($kgm_taskp->threads)
         set $kgm_actp = (struct thread *)($kgm_taskp->threads.next)
-	while $kgm_actp != $kgm_head_actp
-	    showactint $kgm_actp 0
-  	    set $kgm_actp = (struct thread *)($kgm_actp->task_threads.next)
+		while $kgm_actp != $kgm_head_actp
+	    	showactint $kgm_actp 0
+  	    	set $kgm_actp = (struct thread *)($kgm_actp->task_threads.next)
         end
-	printf "\n"
+		printf "\n"
     	set $kgm_taskp = (struct task *)($kgm_taskp->tasks.next)
     end
 end

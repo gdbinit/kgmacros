@@ -731,13 +731,6 @@ define showactint
 		if ($kgm_thread.uthread != 0)
 			printf "\n          "
 			set $kgm_uthread = (struct uthread *)$kgm_thread.uthread
-			if ($kgm_uthread->uu_kwe.kwe_kwqqueue != 0)
-				set $kwq = (ksyn_wait_queue_t)$kgm_uthread->uu_kwe.kwe_kwqqueue
-				printf "              kwq_lockcount:0x%x; kwq_retval:0x%x", $kgm_uthread->uu_kwe.kwe_lockseq, $kgm_uthread->uu_kwe.kwe_psynchretval
-				printf "\n                "
-				show_kwq $kwq
-				printf "          "
-			end
 		end
 		if ($kgm_thread.reserved_stack != 0)
 			printf "\n          "

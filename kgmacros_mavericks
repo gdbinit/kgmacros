@@ -2246,17 +2246,17 @@ define showportdest
     set $kgm_portp = (struct ipc_port *)$arg0
     set $kgm_spacep = $kgm_portp->data.receiver
     if ((uintptr_t)$kgm_spacep == (uintptr_t)ipc_space_kernel)
-	showkobject $kgm_portp
+		showkobject $kgm_portp
     else
-	if ($kgm_portp->ip_object.io_bits & 0x80000000)
-        # fG! - FIXME
-	    #showptr $kgm_portp->ip_messages.data.port.receiver_name
-        printf "  "
-	    showportdestproc $kgm_portp
-	else
-        showptr $kgm_portp
-	    printf "  inactive-port\n"
-	end
+		if ($kgm_portp->ip_object.io_bits & 0x80000000)
+        	# fG! - FIXME
+	    	#showptr $kgm_portp->ip_messages.data.port.receiver_name
+        	printf "  "
+	    	showportdestproc $kgm_portp
+		else
+        	showptr $kgm_portp
+	    	printf "  inactive-port\n"
+		end
     end
 end
 
@@ -2268,9 +2268,9 @@ define showportmember
     set $kgm_portp = (struct ipc_port *)$arg0
     printf "  0x%08x  ", $kgm_portp->ip_messages.data.port.receiver_name
     if ($kgm_portp->ip_object.io_bits & 0x80000000)
-	printf "A"
+		printf "A"
     else
-	printf " "
+		printf " "
     end
     printf "Port"
     printf "%5d  ", $kgm_portp->ip_object.io_references
@@ -2305,9 +2305,9 @@ define showportint
     showptrhdrpad
     printf "  0x%08x  ", $kgm_portp->ip_messages.data.port.receiver_name
     if ($kgm_portp->ip_object.io_bits & 0x80000000)
-	printf "A"
+		printf "A"
     else
-	printf "D"
+		printf "D"
     end
     printf "Port"
     printf "%5d  ", $kgm_portp->ip_object.io_references
@@ -2315,13 +2315,13 @@ define showportint
     showportdest $kgm_portp
     set $kgm_kmsgp = (ipc_kmsg_t)$kgm_portp->ip_messages.data.port.messages.ikmq_base
     if $arg1 && $kgm_kmsgp
-	showkmsgheader
-	showkmsgint $kgm_kmsgp 1
-	set $kgm_kmsgheadp = $kgm_kmsgp
-	set $kgm_kmsgp = $kgm_kmsgp->ikm_next
-	while $kgm_kmsgp != $kgm_kmsgheadp
-	    showkmsgint $kgm_kmsgp 1
-	    set $kgm_kmsgp = $kgm_kmsgp->ikm_next
+		showkmsgheader
+		showkmsgint $kgm_kmsgp 1
+		set $kgm_kmsgheadp = $kgm_kmsgp
+		set $kgm_kmsgp = $kgm_kmsgp->ikm_next
+		while $kgm_kmsgp != $kgm_kmsgheadp
+	    	showkmsgint $kgm_kmsgp 1
+	    	set $kgm_kmsgp = $kgm_kmsgp->ikm_next
         end
     end
 end
@@ -2334,9 +2334,9 @@ define showpsetint
     showptrhdrpad
     printf "  0x%08x  ", $kgm_psetp->ips_messages.data.pset.local_name
     if ($kgm_psetp->ips_object.io_bits & 0x80000000)
-	printf "A"
+		printf "A"
     else
-	printf "D"
+		printf "D"
     end
     printf "Set "
     printf "%5d  ", $kgm_psetp->ips_object.io_references
@@ -2347,17 +2347,17 @@ define showpsetint
     set $kgm_found = 0
     while ( (queue_entry_t)$kgm_wql != (queue_entry_t)$kgm_setlinksp)
         set $kgm_portp = (struct ipc_port *)((uintptr_t)($kgm_wql->wql_element->wqe_queue) - (uintptr_t)$kgm_portoff)
-	if !$kgm_found  
-	    set $kgm_destspacep = (struct ipc_space *)0
-	    showportdestproc $kgm_portp
-	    showportmemberheader
-	    set $kgm_found = 1
-	end
-	showportmember $kgm_portp 0
-	set $kgm_wql = (WaitQueueLink *)$kgm_wql->wql_setlinks.next
+		if !$kgm_found  
+	    	set $kgm_destspacep = (struct ipc_space *)0
+	    	showportdestproc $kgm_portp
+	    	showportmemberheader
+	    	set $kgm_found = 1
+		end
+		showportmember $kgm_portp 0
+		set $kgm_wql = (WaitQueueLink *)$kgm_wql->wql_setlinks.next
     end
     if !$kgm_found
-	printf "--n/e--\n"
+		printf "--n/e--\n"
     end
 end
 
@@ -2376,25 +2376,25 @@ define showipcobject
     set $kgm_objectp = (ipc_object_t)$arg0
     if ($kgm_objectp->io_bits & 0x7fff0000)
         set $kgm_portoff = &(((struct ipc_port *)0)->ip_messages)
-	showpset $kgm_objectp
+		showpset $kgm_objectp
     else
-	showport $kgm_objectp
+		showport $kgm_objectp
     end
 end
 
 define showmqueue
     set $kgm_mqueue = *(struct ipc_mqueue *)$arg0
     if ($kgm_mqueue.data.pset.set_queue.wqs_wait_queue.wq_type == 0xf1d1)
-	set $kgm_psetoff = &(((struct ipc_pset *)0)->ips_messages)
-	set $kgm_pset = (((long)$arg0) - ((long)$kgm_psetoff))
+		set $kgm_psetoff = &(((struct ipc_pset *)0)->ips_messages)
+		set $kgm_pset = (((long)$arg0) - ((long)$kgm_psetoff))
         showpsetheader
-	showpsetint $kgm_pset 1
+		showpsetint $kgm_pset 1
     end
     if ($kgm_mqueue.data.pset.set_queue.wqs_wait_queue.wq_type == 0xf1d0)
         set $kgm_portoff = &(((struct ipc_port *)0)->ip_messages)
-	set $kgm_port = (((long)$arg0) - ((long)$kgm_portoff))
-	showportheader
-	showportint $kgm_port 1
+		set $kgm_port = (((long)$arg0) - ((long)$kgm_portoff))
+		showportheader
+		showportint $kgm_port 1
     end
 end
 
@@ -2910,20 +2910,20 @@ end
 #gdb commands in Tiger (up to 219); these aren't necessary with Panther
 #gdb, but do no harm.
 define _kgm_flush_loop
-       set $kgm_flush_loop_ctr = 0
-       while ($kgm_flush_loop_ctr < 30)
-       	     flushregs
-	     flushstack
-	     set $kgm_flush_loop_ctr = $kgm_flush_loop_ctr + 1
-       end
+	set $kgm_flush_loop_ctr = 0
+    while ($kgm_flush_loop_ctr < 30)
+      	flushregs
+	  	flushstack
+		set $kgm_flush_loop_ctr = $kgm_flush_loop_ctr + 1
+    end
 end
 
 define _kgm_update_loop
-       set $kgm_update_loop_ctr = 0
-       while ($kgm_update_loop_ctr < 30)
-       	     update
-       	     set $kgm_update_loop_ctr = $kgm_update_loop_ctr + 1
-       end
+    set $kgm_update_loop_ctr = 0
+    while ($kgm_update_loop_ctr < 30)
+        update
+        set $kgm_update_loop_ctr = $kgm_update_loop_ctr + 1
+    end
 end
 # Internal routine used by "_loadfrom" to read from 64-bit addresses
 # on 32-bit kernels

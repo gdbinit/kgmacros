@@ -650,9 +650,9 @@ define showactheader
     showptrhdrpad
     printf "    thread_id "
     showptrhdrpad
-    printf "  processor "
-    showptrhdrpad
-    printf "   pri io_policy   state    wait_queue"
+    printf " processor  "
+    #showptrhdrpad
+    printf " pri     state      wait_queue"
     showptrhdrpad
     printf "  wait_event\n"
 end
@@ -678,39 +678,6 @@ define showactint
 	      printf "RAGE "
 	   else
 	      printf "     "
-	   end
-	   set $diskpolicy = 0
-	   if ($kgm_thread->ext_appliedstate.hw_disk != 0)
-		set $diskpolicy = $kgm_thread->ext_appliedstate.hw_disk
-	   else 
-		if ($kgm_thread->appliedstate.hw_disk != 0)
-			set $diskpolicy = $kgm_thread->appliedstate.hw_disk
-		end
-	   end
-	   if ($kgm_thread->ext_appliedstate.hw_bg != 0)
-		set $diskpolicy = 5
-	   end
-	   if ($kgm_thread->appliedstate.hw_bg != 0)
-		set $diskpolicy = 4
-	   end
-	   if ($diskpolicy == 2)
-	      printf "PASS    "
-	      set $kgm_printed = 1
-           end
-	   if ($diskpolicy == 3)
-	      printf "THROT   "
-	      set $kgm_printed = 1
-	   end
-	   if ($diskpolicy == 4)
-	      printf "BG_THRT "
-	      set $kgm_printed = 1
-           end
-	   if ($diskpolicy == 5)
-	      printf "EBG_THRT"
-	      set $kgm_printed = 1
-           end
-	   if ($kgm_printed == 0)
-	      printf "        "
 	   end
 	end
 	set $kgm_state = $kgm_thread.state

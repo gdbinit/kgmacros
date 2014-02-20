@@ -1987,59 +1987,15 @@ define showprocint
         printf "%5d  ", $kgm_procp->p_pid
 		showptr $kgm_procp
 		if ($kgm_procp->p_lflag & 0x400000)
-	   	printf "  RAGE "
+	   		printf "  RAGE "
 		else
 	   		printf "       "
 		end
 		set $ptask = (struct task *)$kgm_procp->task
-		set $diskpolicy = 0
-		if ($ptask->ext_appliedstate.hw_disk != 0)
-			set $diskpolicy = $ptask->ext_appliedstate.hw_disk
-		else 
-			if ($ptask->appliedstate.hw_disk != 0)
-				set $diskpolicy = $ptask->appliedstate.hw_disk
-			end
-		end
-		if ($ptask->ext_appliedstate.hw_bg != 0)
-			set $diskpolicy = 5
-		end
-		if ($ptask->appliedstate.hw_bg != 0)
-			set $diskpolicy = 4
-		end
-    	set $extappliedstate = (struct process_policy*)&$ptask->ext_appliedstate
-    	if ($extappliedstate->apptype == 2)
-		#if ($ptask->ext_appliedstate.apptype == 2)
-			set $diskpolicy = 6
-		end
-		if ($diskpolicy == 2)
-			printf "PASS    "
-			set $kgm_printed = 1
-		end
-		if ($diskpolicy == 3)
-			printf "THROT   "
-			set $kgm_printed = 1
-		end
-		if ($diskpolicy == 4)
-			printf "BG_THRT "
-			set $kgm_printed = 1
-		end
-		if ($diskpolicy == 5)
-			printf "EBG_THRT"
-			set $kgm_printed = 1
-		end
-		if ($diskpolicy == 6)
-			printf "APD_THRT"
-			set $kgm_printed = 1
-		end
 		if ($kgm_printed == 0)
 	   		printf "      "
 		end
-		set $kgm_wqp = (struct workqueue *)$kgm_procp->p_wqptr
-		if $kgm_wqp != 0
-	   		printf "  %2d %2d %2d ", $kgm_wqp->wq_nthreads, $kgm_wqp->wq_thidlecount, $kgm_wqp->wq_reqcount
-		else
-	   		printf "           "
-		end
+   		printf "           "
 		printf "  %s\n", $kgm_procp->p_comm
     else
 		printf "  *0*  "

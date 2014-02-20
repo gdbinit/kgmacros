@@ -1087,21 +1087,21 @@ define showallstacks
     set $kgm_head_taskp = &tasks
     set $kgm_taskp = (struct task *)($kgm_head_taskp->next)
     while $kgm_taskp != $kgm_head_taskp
-	showtaskheader
-	showtaskint $kgm_taskp
-	set $kgm_head_actp = &($kgm_taskp->threads)
-	set $kgm_actp = (struct thread *)($kgm_taskp->threads.next)
-	while $kgm_actp != $kgm_head_actp
-	    showactheader
-	    if ($decode_wait_events > 0)
-	       showactint $kgm_actp 1
-	    else
-	       showactint $kgm_actp 2
-	    end
-	    set $kgm_actp = (struct thread *)($kgm_actp->task_threads.next)
-	end
-	printf "\n"
-	set $kgm_taskp = (struct task *)($kgm_taskp->tasks.next)
+		showtaskheader
+		showtaskint $kgm_taskp
+		set $kgm_head_actp = &($kgm_taskp->threads)
+		set $kgm_actp = (struct thread *)($kgm_taskp->threads.next)
+		while $kgm_actp != $kgm_head_actp
+	    	showactheader
+	    	if ($decode_wait_events > 0)
+	       		showactint $kgm_actp 1
+	    	else
+	       		showactint $kgm_actp 2
+	    	end
+	    	set $kgm_actp = (struct thread *)($kgm_actp->task_threads.next)
+		end
+		printf "\n"
+		set $kgm_taskp = (struct task *)($kgm_taskp->tasks.next)
     end
 
     printf "\nZombie Processes:\n" 

@@ -4915,8 +4915,8 @@ end
 
 define showprocfiles
     if ($argc == 1)
-	_showprocheader
-	_showprocfiles $arg0
+		_showprocheader
+		_showprocfiles $arg0
     else
     	printf "| Usage:\n|\n"
 	help showprocfiles
@@ -4951,56 +4951,59 @@ define _showprocfiles
     set $kgm_spf_ofiles = $kgm_spf_filedesc->fd_ofiles
     set $kgm_spf_count = 0
     while ($kgm_spf_count <= $kgm_spf_last)
-	if ($kgm_spf_ofiles[$kgm_spf_count] == 0)
-	    # DEBUG: For files that were open, but are now closed
-	    # printf "%-5d  FILEPROC_NULL\n", $kgm_spf_count
-	else
-	    # display fd #, fileglob address, fileglob flags
-	    set $kgm_spf_flags = $kgm_spf_ofiles[$kgm_spf_count].f_flags
-	    set $kgm_spf_fg = $kgm_spf_ofiles[$kgm_spf_count].f_fglob
-	    printf "%-5d  ", $kgm_spf_count
-	    showptr $kgm_spf_fg
-	    printf "  0x%08x  ", $kgm_spf_flags
-	    # decode fileglob type
-	    set $kgm_spf_fgt = $kgm_spf_fg->fg_type
-	    if ($kgm_spf_fgt == 1)
-	    	printf "VNODE   "
-	    end
-	    if ($kgm_spf_fgt == 2)
-	    	printf "SOCKET  "
-	    end
-	    if ($kgm_spf_fgt == 3)
-	    	printf "PSXSHM  "
-	    end
-	    if ($kgm_spf_fgt == 4)
-	    	printf "PSXSEM  "
-	    end
-	    if ($kgm_spf_fgt == 5)
-	    	printf "KQUEUE  "
-	    end
-	    if ($kgm_spf_fgt == 6)
-	    	printf "PIPE    "
-	    end
-	    if ($kgm_spf_fgt == 7)
-	    	printf "FSEVENTS"
-	    end
-	    if ($kgm_spf_fgt < 1 || $kgm_spf_fgt > 7)
-	        printf "?: %-5d", $kgm_spf_fgt
-	    end
-
-	    # display fileglob data address and decode interesting fact(s)
-	    # about data, if we know any
-	    set $kgm_spf_fgd = $kgm_spf_fg->fg_data
-	    printf "  "
-	    showptr $kgm_spf_fgd
-	    printf "  "
-	    if ($kgm_spf_fgt == 1)
-	    	set $kgm_spf_name = ((struct vnode *)$kgm_spf_fgd)->v_name
-		if ($kgm_spf_name == 0)
-		    printf "(null)"
+		if ($kgm_spf_ofiles[$kgm_spf_count] == 0)
+	    	# DEBUG: For files that were open, but are now closed
+	    	# printf "%-5d  FILEPROC_NULL\n", $kgm_spf_count
 		else
-		    printf "%s", $kgm_spf_name
-		end
+	    	# display fd #, fileglob address, fileglob flags
+	    	set $kgm_spf_flags = $kgm_spf_ofiles[$kgm_spf_count]
+	    	set $kgm_spf_flags = (struct fileproc*)$kgm_spf_flags->f_flags
+	    	set $kgm_spf_fg = $kgm_spf_ofiles[$kgm_spf_count]
+	    	set $kgm_spf_fg = (struct fileglob*)$kgm_spf_fg->f_fglob
+	    	printf "%-5d  ", $kgm_spf_count
+	    	showptr $kgm_spf_fg
+	    	printf "  0x%08x  ", $kgm_spf_flags
+	    	# decode fileglob type
+	    	set $kgm_spf_fg_ops = $kgm_spf_fg->fg_ops
+	    	set $kgm_spf_fgt = (struct fileops*)$kgm_spf_fg_ops->fo_type
+	    	if ($kgm_spf_fgt == 1)
+	    		printf "VNODE   "
+	    	end
+	    	if ($kgm_spf_fgt == 2)
+	    		printf "SOCKET  "
+	    	end
+	    	if ($kgm_spf_fgt == 3)
+	    		printf "PSXSHM  "
+	    	end
+	    	if ($kgm_spf_fgt == 4)
+	    		printf "PSXSEM  "
+	    	end
+	    	if ($kgm_spf_fgt == 5)
+	    		printf "KQUEUE  "
+	    	end
+	    	if ($kgm_spf_fgt == 6)
+	    		printf "PIPE    "
+	    	end
+	    	if ($kgm_spf_fgt == 7)
+	    		printf "FSEVENTS"
+	    	end
+	    	if ($kgm_spf_fgt < 1 || $kgm_spf_fgt > 7)
+	        	printf "?: %-5d", $kgm_spf_fgt
+	    	end
+
+	    	# display fileglob data address and decode interesting fact(s)
+	    	# about data, if we know any
+	    	set $kgm_spf_fgd = $kgm_spf_fg->fg_data
+	    	printf "  "
+	    	showptr $kgm_spf_fgd
+	    	printf "  "
+	    	if ($kgm_spf_fgt == 1)
+	    		set $kgm_spf_name = ((struct vnode *)$kgm_spf_fgd)->v_name
+			if ($kgm_spf_name == 0)
+		    	printf "(null)"
+			else
+		    	printf "%s", $kgm_spf_name
+			end
 	    end
 	    printf "\n"
 	end

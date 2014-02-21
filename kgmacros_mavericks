@@ -10140,7 +10140,7 @@ end
 
 define pmap_vtop
     if $argc != 2
-        printf "pmap_vtop <pamp> <vaddr>\n"
+        printf "pmap_vtop <pmap> <vaddr>\n"
     else
         set $kgm_pt_verbose = 1
         if (($kgm_mtype & $kgm_mtype_x86_mask) == $kgm_mtype_x86_any)

@@ -5465,7 +5465,9 @@ define showprocvnodes
 		#printf"fpp %x ", *$fpp
 		if *$fpp
 			set $fg =(struct fileglob *)((**$fpp)->f_fglob)
-			if  $fg && (($fg)->fg_type == 1) 
+			set $fo = $fg->fg_ops
+			set $fo = (struct fileops*)$fo
+			if  $fg && ($fo->fo_type == 1) 
 				if $fdp->fd_ofileflags[$count] & 4
 					printf "U: "
 				else
@@ -8728,7 +8730,9 @@ define showallvols
 		else
 			printf "%-10s  ", $kgm_vol->mnt_vtable->vfc_name
 		end
-		printf "%s\n", $kgm_vol->mnt_vfsstat.f_mntonname
+		set $x=&$kgm_vol->mnt_vfsstat
+		set $x=(struct vfsstatfs*)$x
+		printf "%s\n", $x->f_mntonname
 		
 		set $kgm_vol = (mount_t) $kgm_vol->mnt_list.tqe_next
 	end

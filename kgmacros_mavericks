@@ -102,7 +102,7 @@ document kgm
 |     showallmtx     Display info about mutexes usage - WORKS
 |     showallrwlck   Display info about reader/writer locks usage - WORKS
 |
-|     zprint         Display info about the memory zones - ok XXX
+|     zprint         Display info about the memory zones - WORKS
 |     showioalloc    Display info about iokit allocations - WORKS
 |     paniclog       Display the panic log info - ?
 |

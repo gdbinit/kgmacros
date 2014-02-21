@@ -2407,10 +2407,6 @@ define zprint_one
     printf "%8x ",$kgm_zone->max_size
     printf "%8d ",$kgm_zone->elem_size
     printf "%8x ",$kgm_zone->alloc_size
-    if ($kgm_mtype != $kgm_mtype_arm) 
-        printf " %16ld ",$kgm_zone->num_allocs 
-        printf "%16ld ",$kgm_zone->num_frees
-    end
     printf "%s ",$kgm_zone->zone_name
 
     if ($kgm_zone->exhaustible)

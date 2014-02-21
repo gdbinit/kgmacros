@@ -2114,9 +2114,9 @@ end
 
 define showkobject
     set $kgm_portp = (struct ipc_port *)$arg0
-    showptr $kgm_portp->ip_kobject
+    showptr $kgm_portp->kdata.kobject
     printf "  kobject("
-    set $kgm_kotype = ($kgm_portp->ip_object.io_bits & 0x00000fff)
+    set $kgm_kotype = (((struct ipc_object)$kgm_portp->ip_object).io_bits & 0x00000fff)
     if ($kgm_kotype == 1)
 	printf "THREAD"
     end

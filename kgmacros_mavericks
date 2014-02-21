@@ -8268,27 +8268,34 @@ define showprocsockets
 	set $fdp = (struct filedesc *)$pp->p_fd
 
 	set $count = 0
-	set $fpp =  (struct fileproc **)($fdp->fd_ofiles)
-	set $fpo =  (char)($fdp->fd_ofileflags[0])
-	while $count < $fdp->fd_nfiles
-		if *$fpp
-			set $fg =(struct fileglob *)((**$fpp)->f_fglob)
-			if  $fg && (($fg)->fg_type == 2) 
-				if $fdp->fd_ofileflags[$count] & 4
-					printf "U: "
-				else
-					printf " "
-				end
-				printf "fd = %d ", $count
-				if  $fg->fg_data
-					showsocket  $fg->fg_data
-				else
-					printf "\n"
+	# fG! - kernel_task has NULL fd_ofiles so we need to test it to avoid ugly error msg
+	if ($fdp->fd_ofiles != 0)
+
+		set $fpp =  (struct fileproc **)($fdp->fd_ofiles)
+		set $fpo =  (char)($fdp->fd_ofileflags[0])
+
+		while $count < $fdp->fd_nfiles
+			if *$fpp
+				set $fg =(struct fileglob *)((**$fpp)->f_fglob)
+				set $fo = $fg->fg_ops
+				set $fo = (struct fileops*)$fo
+				if  $fg && (($fo)->fo_type == 2) 
+					if $fdp->fd_ofileflags[$count] & 4
+						printf "U: "
+					else
+						printf " "
+					end
+					printf "fd = %d ", $count
+					if  $fg->fg_data
+						showsocket  $fg->fg_data
+					else
+						printf "\n"
+					end
 				end
 			end
+			set $fpp = $fpp + 1
+	 		set $count = $count + 1		
 		end
-		set $fpp = $fpp + 1
-	 	set $count = $count + 1		
 	end
 end
 document showprocsockets

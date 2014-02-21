@@ -14,8 +14,11 @@ For info about using VMware's gdb stub for kernel debugging refer to Snare's pos
 http://ho.ax/posts/2012/02/vmware-hardware-debugging/
 
 It's a work in progress, quite a few commands need to be fixed.
-THe most useful (to me at least) already work.
+The most useful (to me at least) already work.
+
+There's also an updated version to use with Mavericks.
 
 Enjoy,
 Pedro
 (pedro@coseinc.com)
+(pedro@sentinel-labs.com)

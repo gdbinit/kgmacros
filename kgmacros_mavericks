@@ -31,27 +31,27 @@ document kgm
 | The following macros are available in this package:
 |     showversion    Displays a string describing the remote kernel version
 |
-|     showalltasks   Display a summary listing of all tasks - ok
-|     showallthreads Display info about all threads in the system - ok
-|     showallstacks  Display the stack for each thread in the system - ok
-|     showcurrentthreads   Display info about the thread running on each cpu - ok
-|     showcurrentstacks    Display the stack for the thread running on each cpu - ok
-|     showallvm      Display a summary listing of all the vm maps - ok
-|     showallvme     Display a summary listing of all the vm map entries - ok
-|     showallipc     Display a summary listing of all the ipc spaces - ok
-|     showipcsummary     Display a summary listing of the ipc spaces of all tasks - ok
-|     showallrights  Display a summary listing of all the ipc rights - ok
-|     showallkexts   Display a summary listing of all loaded kexts (alias: showallkmods) - ok
-|     showallknownkexts   Display a summary listing of all kexts, loaded or not - ok
+|     showalltasks   Display a summary listing of all tasks - WORKS
+|     showallthreads Display info about all threads in the system - WORKS
+|     showallstacks  Display the stack for each thread in the system - WORKS
+|     showcurrentthreads   Display info about the thread running on each cpu - WORKS
+|     showcurrentstacks    Display the stack for the thread running on each cpu - WORKS
+|     showallvm      Display a summary listing of all the vm maps - WORKS
+|     showallvme     Display a summary listing of all the vm map entries - WORKS
+|     showallipc     Display a summary listing of all the ipc spaces - WORKS
+|     showipcsummary     Display a summary listing of the ipc spaces of all tasks - WORKS
+|     showallrights  Display a summary listing of all the ipc rights - WORKS
+|     showallkexts   Display a summary listing of all loaded kexts (alias: showallkmods) - WORKS
+|     showallknownkexts   Display a summary listing of all kexts, loaded or not - WORKS
 |     showallbusyports    Display a listing of all ports with unread messages - NOK
 |     showallprocessors   Display a listing of all psets and processors - NOK
 |
-|     showallclasses    Display info about all OSObject subclasses in the system - ok
+|     showallclasses    Display info about all OSObject subclasses in the system - WORKS
 |     showobject        Show info about an OSObject - its vtable ptr and retain count, & more info for simple container classes. - ?
-|     showregistry      Show info about all registry entries in the current plane - ok
+|     showregistry      Show info about all registry entries in the current plane - WORKS
 |     showregistryprops Show info about all registry entries in the current plane, and their properties - NOK starts dumping binary data?
-|     showregistryentry Show info about a registry entry; its properties and descendants in the current plane - ok
-|     setregistryplane  Set the plane to be used for the iokit registry macros (pass zero for list) - ok
+|     showregistryentry Show info about a registry entry; its properties and descendants in the current plane - WORKS
+|     setregistryplane  Set the plane to be used for the iokit registry macros (pass zero for list) - WORKS
 |
 |     setfindregistrystr  Set the encoded string for matching with
 |                         findregistryentry or findregistryprop (created from
@@ -61,84 +61,84 @@ document kgm
 |     findregistryprop    Search the registry entry for a property that matches
 |                         the encoded string - ? example gives invalid cast
 |
-|     showtask       Display info about the specified task - ok
-|     showtaskthreads      Display info about the threads in the task - ok
-|     showtaskstacks Display the stack for each thread in the task - ok
-|     showtaskvm     Display info about the specified task's vm_map - ok
-|     showtaskvme    Display info about the task's vm_map entries - ok
-|     showtaskipc    Display info about the specified task's ipc space - ok
-|     showtaskrights Display info about the task's ipc space entries - ok
+|     showtask       Display info about the specified task - WORKS
+|     showtaskthreads      Display info about the threads in the task - WORKS
+|     showtaskstacks Display the stack for each thread in the task - WORKS
+|     showtaskvm     Display info about the specified task's vm_map - WORKS
+|     showtaskvme    Display info about the task's vm_map entries - WORKS
+|     showtaskipc    Display info about the specified task's ipc space - WORKS
+|     showtaskrights Display info about the task's ipc space entries - WORKS
 |     showtaskrightsbt Display info about the task's ipc space entries with back traces - NOK fails on showipcint
 |     showtaskbusyports    Display all of the task's ports with unread messages - NOK
 |
-|     showact	     Display info about a thread specified by activation - ok
-|     showactstack   Display the stack for a thread specified by activation - ok
+|     showact	     Display info about a thread specified by activation - WORKS
+|     showactstack   Display the stack for a thread specified by activation - WORKS
 |
-|     showmap	     Display info about the specified vm_map - ok
-|     showmapvme     Display a summary list of the specified vm_map's entries - ok
-|     showvmap       Display vm_map structure
-|     showpmap       Display pmap structure
+|     showmap	     Display info about the specified vm_map - WORKS
+|     showmapvme     Display a summary list of the specified vm_map's entries - WORKS
+|     showvmap       Display vm_map structure - WORKS
+|     showpmap       Display pmap structure - WORKS
 |
-|     showipc        Display info about the specified ipc space - ok
-|     showrights     Display a summary list of all the rights in an ipc space - ok
+|     showipc        Display info about the specified ipc space - WORKS
+|     showrights     Display a summary list of all the rights in an ipc space - WORKS
 |
-|     showpid        Display info about the process identified by pid - ok
-|     showproc       Display info about the process identified by proc struct - ok
-|     showprocinfo   Display detailed info about the process identified by proc struct - ok
-|     showprocfiles  Given a proc_t pointer, display the list of open file descriptors - NOK
-|     showproclocks  Given a proc_t pointer, display the list of advisory file locks - NOK
+|     showpid        Display info about the process identified by pid - WORKS
+|     showproc       Display info about the process identified by proc struct - WORKS
+|     showprocinfo   Display detailed info about the process identified by proc struct - WORKS
+|     showprocfiles  Given a proc_t pointer, display the list of open file descriptors - WORKS
+|     showproclocks  Given a proc_t pointer, display the list of advisory file locks - WORKS
 |     zombproc       Print out all procs in the zombie list - ok ?
-|     showproctree   Show all the processes in a hierarchical tree form - ok
-|     allproc        Print out all process in the system not in the zombie list - ok
+|     showproctree   Show all the processes in a hierarchical tree form - WORKS
+|     allproc        Print out all process in the system not in the zombie list - WORKS
 |     zombstacks     Print out all stacks of tasks that are exiting - ok ?
 |
-|     showinitchild  Print out all processes in the system which are children of init process - ok
+|     showinitchild  Print out all processes in the system which are children of init process - WORKS
 |
-|     showkext	     Display info about a kext (alias: showkmod) - ok
-|     showkextaddr   Given an address, display the kext and offset (alias: showkmodaddr) - ok, command didnt exist
+|     showkext	     Display info about a kext (alias: showkmod) - WORKS
+|     showkextaddr   Given an address, display the kext and offset (alias: showkmodaddr) - WORKS
 |
 |     dumpcallqueue  Dump out all the entries given a queue head - ?
 |
-|     showallmtx     Display info about mutexes usage - ok
-|     showallrwlck   Display info about reader/writer locks usage - ok
+|     showallmtx     Display info about mutexes usage - WORKS
+|     showallrwlck   Display info about reader/writer locks usage - WORKS
 |
-|     zprint         Display info about the memory zones - ok
-|     showioalloc    Display info about iokit allocations - ok
-|     paniclog       Display the panic log info - ok
+|     zprint         Display info about the memory zones - ok XXX
+|     showioalloc    Display info about iokit allocations - WORKS
+|     paniclog       Display the panic log info - ?
 |
-|     switchtoact    Switch to different context specified by activation
-|     switchtoctx    Switch to different context
+|     switchtoact    Switch to different context specified by activation - ?
+|     switchtoctx    Switch to different context - ?
 |     showuserstack  Display numeric backtrace of the user stack for an 
-|     		     activation
-|     showtaskuserstacks	 Display user stacks for a specified task - NOK
+|     		     activation - ?
+|     showtaskuserstacks	 Display user stacks for a specified task - NOK XXX
 |     showuserregisters		 Display user registers for the specified thread - NOK
-|     showtaskuserregisters		 Display user registers for the specified task - NOK
+|     showtaskuserregisters		 Display user registers for the specified task - NOK XXX
 |
-|     switchtouserthread Switch to the user context of the specified thread
-|     resetstacks    Return to the original kernel context
+|     switchtouserthread Switch to the user context of the specified thread - ?
+|     resetstacks    Return to the original kernel context - ?
 |
 |     resetctx       Reset context
 |     resume_on      Resume when detaching from gdb
 |     resume_off     Don't resume when detaching from gdb 
 |
-|     sendcore	     Configure kernel to send a coredump to the specified IP
-|     sendsyslog     Configure kernel to send a system log to the specified IP
-|     sendpaniclog   Configure kernel to send a panic log to the specified IP
-|     disablecore    Configure the kernel to disable coredump transmission
-|     getdumpinfo    Retrieve the current remote dump parameters
-|     setdumpinfo    Configure the remote dump parameters
+|     sendcore	     Configure kernel to send a coredump to the specified IP - ?
+|     sendsyslog     Configure kernel to send a system log to the specified IP - ?
+|     sendpaniclog   Configure kernel to send a panic log to the specified IP - ?
+|     disablecore    Configure the kernel to disable coredump transmission - ?
+|     getdumpinfo    Retrieve the current remote dump parameters - ?
+|     setdumpinfo    Configure the remote dump parameters - ?
 |
-|     switchtocorethread Corefile version of "switchtoact"
-|     resetcorectx   Corefile version of "resetctx"
+|     switchtocorethread Corefile version of "switchtoact" - ?
+|     resetcorectx   Corefile version of "resetctx" - ?
 |
-|     readphys8      Reads the specified untranslated address (8-bit read) - ok
-|     readphys16     Reads the specified untranslated address (16-bit read) - ok
-|     readphys32     Reads the specified untranslated address (32-bit read) - ok
-|     readphys64     Reads the specified untranslated address (64-bit read) - ok
-|     writephys8     Writes to the specified untranslated address (8-bit write) - ok
-|     writephys16    Writes to the specified untranslated address (16-bit write) - ok
-|     writephys32    Writes to the specified untranslated address (32-bit write) - ok
-|     writephys64    Writes to the specified untranslated address (64-bit write) - ok
+|     readphys8      Reads the specified untranslated address (8-bit read) - WORKS
+|     readphys16     Reads the specified untranslated address (16-bit read) - WORKS
+|     readphys32     Reads the specified untranslated address (32-bit read) - WORKS
+|     readphys64     Reads the specified untranslated address (64-bit read) - WORKS
+|     writephys8     Writes to the specified untranslated address (8-bit write) - WORKS
+|     writephys16    Writes to the specified untranslated address (16-bit write) - WORKS
+|     writephys32    Writes to the specified untranslated address (32-bit write) - WORKS
+|     writephys64    Writes to the specified untranslated address (64-bit write) - WORKS
 |
 |     readioport8    Read 8-bits from the specified I/O Port - ?
 |     readioport16   Read 16-bits from the specified I/O Port - ?
@@ -147,11 +147,11 @@ document kgm
 |     writeioport16  Write 16-bits into the specified I/O Port - ?
 |     writeioport32  Write 32-bits into the specified I/O Port - ?
 |
-|     readmsr64      Read 64-bits from the specified MSR
-|     writemsr64     Write 64-bits into the specified MSR
+|     readmsr64      Read 64-bits from the specified MSR - NOK
+|     writemsr64     Write 64-bits into the specified MSR - NOK
 |
-|     rtentry_showdbg Print the debug information of a route entry
-|     rtentry_trash  Walk the list of trash route entries
+|     rtentry_showdbg Print the debug information of a route entry - ?
+|     rtentry_trash  Walk the list of trash route entries - ?
 |
 |     inifa_showdbg  Print the debug information of an IPv4 interface address - ?
 |     in6ifa_showdbg Print the debug information of an IPv6 interface address - ?
@@ -171,75 +171,75 @@ document kgm
 |     in6m_trash     Walk the list of trash in6_multi entries - ?
 |     ifma_trash     Walk the list of trash ifmultiaddr entries - ?
 |
-|     mbuf_walkpkt   Walk the mbuf packet chain (m_nextpkt)
-|     mbuf_walk      Walk the mbuf chain (m_next)
-|     mbuf_buf2slab  Find the slab structure of the corresponding buffer
-|     mbuf_buf2mca   Find the mcache audit structure of the corresponding mbuf
-|     mbuf_showmca   Print the contents of an mbuf mcache audit structure
+|     mbuf_walkpkt   Walk the mbuf packet chain (m_nextpkt) - NOK
+|     mbuf_walk      Walk the mbuf chain (m_next) - NOK
+|     mbuf_buf2slab  Find the slab structure of the corresponding buffer - NOK
+|     mbuf_buf2mca   Find the mcache audit structure of the corresponding mbuf - NOK
+|     mbuf_showmca   Print the contents of an mbuf mcache audit structure - NOK
 |     mbuf_showactive   Print all active/in-use mbuf objects - NOK
 |     mbuf_showinactive Print all freed/in-cache mbuf objects - NOK
 |     mbuf_showall   Print all mbuf objects - NOK
-|     mbuf_slabs     Print all slabs in the group
-|     mbuf_slabstbl  Print slabs table
-|     mbuf_stat      Print extended mbuf allocator statistics
-|     mbuf_countchain   Count the length of an mbuf chain
-|     mbuf_topleak   Print the top suspected mbuf leakers
-|     mbuf_traceleak Print the leak information for a given leak address
+|     mbuf_slabs     Print all slabs in the group - NOK
+|     mbuf_slabstbl  Print slabs table - NOK
+|     mbuf_stat      Print extended mbuf allocator statistics - NOK
+|     mbuf_countchain   Count the length of an mbuf chain - NOK
+|     mbuf_topleak   Print the top suspected mbuf leakers - NOK
+|     mbuf_traceleak Print the leak information for a given leak address - NOK
 |
-|     mcache_walkobj     Walk the mcache object chain (obj_next)
+|     mcache_walkobj     Walk the mcache object chain (obj_next) - ?
 |     mcache_stat        Print all mcaches in the system - NOK
-|     mcache_showcache   Display the number of objects in the cache
+|     mcache_showcache   Display the number of objects in the cache - ?
 |
 |     showbootargs       Display boot arguments passed to the target kernel - NOK
-|     showbootermemorymap Dump phys memory map from EFI - ok
+|     showbootermemorymap Dump phys memory map from EFI - WORKS
 |
-|     systemlog          Display the kernel's printf ring buffer - ok, takes a while to dump
+|     systemlog          Display the kernel's printf ring buffer - WORKS
 |
-|     hexdump            Show the contents of memory as a hex/ASCII dump - ok
+|     hexdump            Show the contents of memory as a hex/ASCII dump - WORKS
 |
-|     showvnodepath      Print the path for a vnode - ok
-|     showvnodelocks     Display list of advisory locks held/blocked on a vnode - ok
-|     showvnodedev       Display information about a device vnode - NOK
+|     showvnodepath      Print the path for a vnode - WORKS
+|     showvnodelocks     Display list of advisory locks held/blocked on a vnode - WORKS
+|     showvnodedev       Display information about a device vnode - ?
 |     showtty            Display information about a struct tty - ?
-|     showallvols        Display a summary of mounted volumes - NOK
-|     showvnode          Display info about one vnode - ok
-|     showvolvnodes      Display info about all vnodes of a given volume - ?
-|     showvolbusyvnodes  Display info about busy (iocount!=0) vnodes of a given volume - ?
-|     showallbusyvnodes  Display info about all busy (iocount!=0) vnodes - ?
-|     showallvnodes      Display info about all vnodes - ok
-|     print_vnode        Print out the fields of a vnode struct - ok
-|     showprocvnodes     Print out all the open fds which are vnodes in a process - ok
-|     showallprocvnodes  Print out all the open fds which are vnodes in any process - ok
-|     showmountvnodes    Print the vnode list - ?
-|     showmountallvnodes Print the vnode inactive list - ?
-|     showworkqvnodes    Print the vnode worker list - ?
-|     shownewvnodes      Print the new vnode list - ?
+|     showallvols        Display a summary of mounted volumes - WORKS
+|     showvnode          Display info about one vnode - WORKS
+|     showvolvnodes      Display info about all vnodes of a given volume - WORKS
+|     showvolbusyvnodes  Display info about busy (iocount!=0) vnodes of a given volume - WORKS
+|     showallbusyvnodes  Display info about all busy (iocount!=0) vnodes - WORKS
+|     showallvnodes      Display info about all vnodes - WORKS
+|     print_vnode        Print out the fields of a vnode struct - WORKS
+|     showprocvnodes     Print out all the open fds which are vnodes in a process - WORKS
+|     showallprocvnodes  Print out all the open fds which are vnodes in any process - WORKS
+|     showmountvnodes    Print the vnode list - WORKS
+|     showmountallvnodes Print the vnode inactive list - WORKS
+|     showworkqvnodes    Print the vnode worker list - WORKS
+|     shownewvnodes      Print the new vnode list - WORKS
 |
-|     ifconfig           display ifconfig-like output - ok
-|     showifnets         show the list of attached and detached interfaces - ok
+|     ifconfig           display ifconfig-like output - WORKS
+|     showifnets         show the list of attached and detached interfaces - WORKS
 |     showifaddrs        show the list of addresses for the given ifp - ?
 |     showifmultiaddrs   show the list of multicast addresses for the given ifp - ?
-|     showinmultiaddrs   show the list of IPv4 multicast addresses records - ok
-|     showin6multiaddrs  show the list of IPv6 multicast addresses records - ok
+|     showinmultiaddrs   show the list of IPv4 multicast addresses records - WORKS
+|     showin6multiaddrs  show the list of IPv6 multicast addresses records - WORKS
 |
-|     showsocket         Display information about a socket - ok
-|     showprocsockets    Given a proc_t pointer, display information about its sockets - ok
-|     showallprocsockets Display information about the sockets of all the processes - ok
+|     showsocket         Display information about a socket - WORKS
+|     showprocsockets    Given a proc_t pointer, display information about its sockets - WORKS
+|     showallprocsockets Display information about the sockets of all the processes - WORKS
 |
-|     show_tcp_pcbinfo   Display the list of the TCP protocol control blocks - ok
+|     show_tcp_pcbinfo   Display the list of the TCP protocol control blocks - WORKS
 |     show_tcp_timewaitslots Display the list of the TCP protocol control blocks in TIMEWAIT - NOK, fails near the end reading some mem
-|     show_udp_pcbinfo   Display the list of UDP protocol control blocks - ok
+|     show_udp_pcbinfo   Display the list of UDP protocol control blocks - WORKS
 |
-|     show_rt_inet       Display the IPv4 routing table - ok
+|     show_rt_inet       Display the IPv4 routing table - WORKS
 |     show_rt_inet6      Display the IPv6 routing table - NOK, maybe because no IPV6 ?
 |
-|     showpmworkqueue       Display the IOPMWorkQueue object - ok
+|     showpmworkqueue       Display the IOPMWorkQueue object - WORKS
 |     showregistrypmstate   Display power management state for all IOPower registry entries - NOK
 |     showioservicepm       Display the IOServicePM object ? 
-|     showstacksaftertask   showallstacks starting after a given task - ok
-|     showstacksafterthread showallstacks starting after a given thread - ok
+|     showstacksaftertask   showallstacks starting after a given task - WORKS
+|     showstacksafterthread showallstacks starting after a given thread - WORKS
 |
-|     showMCAstate	Print machine-check register state after MC exception. - ok
+|     showMCAstate	Print machine-check register state after MC exception. - WORKS
 |
 |     showallgdbstacks	Cause GDB to trace all thread stacks - NOK
 |     showallgdbcorestacks Corefile equivalent of "showallgdbstacks" - NOK
@@ -266,16 +266,16 @@ document kgm
 |     showztracehistogram   Prints a histogram of the ztraces table - ?
 |     showzallochistogram   Prints a histogram of the zallocs table	- ?
 |
-|     pmap_walk         Perform a page-table walk
-|     pmap_walk_page    Perform a page-table walk and dump the whole 4k page or specified size
-|     pmap_vtop         Translate a virtual address to physical address
+|     pmap_walk         Perform a page-table walk - WORKS
+|     pmap_walk_page    Perform a page-table walk and dump the whole 4k page or specified size - WORKS
+|     pmap_vtop         Translate a virtual address to physical address - WORKS
 |
 |     showuserdyldinfo       Show dyld information and error messages - NOK
 |                            in the target task
 |     showuserlibraries      Show binary images known by dyld in the - NOK
 |                            target task
-|     showallvmstats	Prints a summary of vm statistics in a table format - ok
-|     memstats			Displays memory statistics in a table format - ok
+|     showallvmstats	Prints a summary of vm statistics in a table format - WORKS
+|     memstats			Displays memory statistics in a table format - WORKS
 |
 |     showthreadfortid	Displays the address of the thread structure - ?
 |                       for a given thread_id value. 
@@ -304,11 +304,11 @@ document kgm
 |     ioapic_write32    Write IOAPIC entry - ?
 |     ioapic_dump       Dump IOAPIC entries - NOK
 |
-|     showallproviders  Display summary listing of all dtrace_providers - ok
-|     showallmodctls    Display summary listing of all dtrace modctls - ok
-|     showmodctl        Display info about a dtrace modctl - ok
+|     showallproviders  Display summary listing of all dtrace_providers - WORKS
+|     showallmodctls    Display summary listing of all dtrace modctls - WORKS
+|     showmodctl        Display info about a dtrace modctl - WORKS
 |     showfbtprobe      Display info about an fbt probe given an id (traverses fbt_probetab) - ?
-|     processortimers   Display all processor timers, noting any inconsistencies - ok
+|     processortimers   Display all processor timers, noting any inconsistencies - WORKS
 |	  
 |     maplocalcache     Enable local caching in GDB for improved debug speeds
 |     flushlocalcahe    Disable local caching in GDB (deletes all memory regions)

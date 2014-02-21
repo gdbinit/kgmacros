@@ -8520,11 +8520,11 @@ define _dump_pcbinfo
 	set $pcbseen = 0
 	set $pcbi = (struct inpcbinfo *)$arg0
 	printf "lastport %d lastlow %d lasthi %d\n", \
-	    $pcbi->lastport, $pcbi->lastlow, $pcbi->lasthi
+	    $pcbi->ipi_lastport, $pcbi->ipi_lastlow, $pcbi->ipi_lasthi
 	printf "active pcb count is %d\n", $pcbi->ipi_count
-	set $hashsize = $pcbi->hashmask + 1
+	set $hashsize = $pcbi->ipi_hashmask + 1
 	printf "hash size is %d\n", $hashsize
-	printf "hash base %p has the following inpcb(s):\n", $pcbi->hashbase
+	printf "hash base %p has the following inpcb(s):\n", $pcbi->ipi_hashbase
 	if $kgm_lp64
 		printf "pcb                prot source                          address port  destination                     address port\n"
 		printf "------------------ ---- --------------------------------------- ----- --------------------------------------- -----\n"
@@ -8533,7 +8533,7 @@ define _dump_pcbinfo
 		printf "---------- ---- --------------------------------------- ----- --------------------------------------- -----\n"
 	end
 	set $i = 0
-	set $hashbase = $pcbi->hashbase
+	set $hashbase = $pcbi->ipi_hashbase
 	set $head = *(uintptr_t *)$hashbase
 	while $i < $hashsize
 		if $head != 0
@@ -8572,9 +8572,9 @@ define _dump_pcbinfo
 	end
 	printf "total seen %ld snd_cc %ld rcv_cc %ld\n", $pcbseen, $snd_cc, $rcv_cc
 	printf "total snd_buf %u rcv_buf %u \n", (unsigned int)$snd_buf, (unsigned int)$rcv_buf
-	printf "port hash base is %p\n", $pcbi->porthashbase
+	printf "port hash base is %p\n", $pcbi->ipi_porthashbase
 	set $i = 0
-	set $hashbase = $pcbi->porthashbase
+	set $hashbase = $pcbi->ipi_porthashbase
 	set $head = *(uintptr_t *)$hashbase
 	while $i < $hashsize
 		if $head != 0

@@ -1044,14 +1044,14 @@ define showallprocessors
 	end
 	
 	printf "\n"
-	printf "Realtime Queue Count %d\n", rt_runq.count
-	set $kgm_rt_runq_head = &rt_runq.queue
-	set $kgm_rt_runq = $kgm_rt_runq_head->next
-	while $kgm_rt_runq != $kgm_rt_runq_head
-		showtask ((thread_t)$kgm_rt_runq)->task
-		showact $kgm_rt_runq
-		set $kgm_rt_runq = $kgm_rt_runq->next
-	end
+	#printf "Realtime Queue Count %d\n", rt_runq.count
+	#set $kgm_rt_runq_head = &rt_runq.queue
+	#set $kgm_rt_runq = $kgm_rt_runq_head->next
+	#while $kgm_rt_runq != $kgm_rt_runq_head
+	#	showtask ((thread_t)$kgm_rt_runq)->task
+	#	showact $kgm_rt_runq
+	#	set $kgm_rt_runq = $kgm_rt_runq->next
+	#end
 	
 	printf "\n"
 	if $kgm_show_fairshare_list

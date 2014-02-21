@@ -5019,7 +5019,7 @@ end
 #
 define showproclocks
     if ($argc == 1)
-	_showproclocks $arg0
+		_showproclocks $arg0
     else
     	printf "| Usage:\n|\n"
 	help showproclocks
@@ -5038,34 +5038,36 @@ define _showproclocks
     set $kgm_spl_count = 0
     set $kgm_spl_seen = 0
     while ($kgm_spl_count <= $kgm_spl_last)
-	if ($kgm_spl_ofiles[$kgm_spl_count] == 0)
-	    # DEBUG: For files that were open, but are now closed
-	    # printf "%-5d  FILEPROC_NULL\n", $kgm_spl_count
-	else
-	    set $kgm_spl_fg = $kgm_spl_ofiles[$kgm_spl_count].f_fglob
-	    # decode fileglob type
-	    set $kgm_spl_fgt = $kgm_spl_fg->fg_type
-	    if ($kgm_spl_fgt == 1)
-		set $kgm_spl_fgd = $kgm_spl_fg->fg_data
-	    	set $kgm_spl_name = ((struct vnode *)$kgm_spl_fgd)->v_name
-		set $kgm_spl_vnode = ((vnode_t)$kgm_spl_fgd)
-		set $kgm_spl_lockiter = $kgm_spl_vnode->v_lockf
-		if ($kgm_spl_lockiter != 0)
-		    if ($kgm_spl_seen == 0)
-			_showvnodelockheader
-		    end
-		    set $kgm_spl_seen = $kgm_spl_seen + 1
-		    printf "( fd %d, name ", $kgm_spl_count
-		    if ($kgm_spl_name == 0)
-			printf "(null) )"
-		    else
-			printf "%s )\n", $kgm_spl_name
-		    end
-		    _showvnodelocks $kgm_spl_fgd
+		if ($kgm_spl_ofiles[$kgm_spl_count] == 0)
+	    	# DEBUG: For files that were open, but are now closed
+	    	# printf "%-5d  FILEPROC_NULL\n", $kgm_spl_count
+		else
+	    	set $kgm_spl_fg = $kgm_spl_ofiles[$kgm_spl_count]
+	    	set $kgm_spl_fg = (struct fileglob*)$kgm_spl_fg->f_fglob
+	    	# decode fileglob type
+	    	set $kgm_spl_fg_ops = $kgm_spl_fg->fg_ops
+	    	set $kgm_spl_fgt = (struct fileops*)$kgm_spl_fg_ops->fo_type
+	    	if ($kgm_spl_fgt == 1)
+				set $kgm_spl_fgd = $kgm_spl_fg->fg_data
+	    		set $kgm_spl_name = ((struct vnode *)$kgm_spl_fgd)->v_name
+				set $kgm_spl_vnode = ((vnode_t)$kgm_spl_fgd)
+				set $kgm_spl_lockiter = $kgm_spl_vnode->v_lockf
+				if ($kgm_spl_lockiter != 0)
+		    		if ($kgm_spl_seen == 0)
+						_showvnodelockheader
+		    		end
+		    		set $kgm_spl_seen = $kgm_spl_seen + 1
+		    		printf "( fd %d, name ", $kgm_spl_count
+		    		if ($kgm_spl_name == 0)
+						printf "(null) )"
+		    		else
+						printf "%s )\n", $kgm_spl_name
+		    		end
+		    		_showvnodelocks $kgm_spl_fgd
+				end
+	    	end
 		end
-	    end
-	end
-    	set $kgm_spl_count = $kgm_spf_count + 1
+    	set $kgm_spl_count = $kgm_spl_count + 1
     end
     printf "%d total locks for ", $kgm_spl_seen
     showptr $arg0
